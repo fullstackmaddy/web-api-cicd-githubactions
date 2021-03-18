@@ -1,0 +1,59 @@
+name: production-deployment-pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - '**/*.md'
+    - '**/*.gitignore'
+    - '**/testassets'
+
+env:
+  AZURE_WEB_APP_NAME: poke-facade-api
+  AZURE_WEBAPP_PACKAGE_PATH: ./publishedwebapp
+  CONFIGURATION: Release
+  SOLUTIONPATH: src/Poke.API.Facade.sln
+  
+
+
+jobs:
+  build-and-unit-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup dot net
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      
+      - name: Build code
+        run: dotnet build ${{env.SOLUTIONPATH}}
+
+      - name: Make Directory for test results
+        run: mkdir -p testresults
+
+      
+      - name: Run Xunit Tests
+        run: dotnet test ${{env.solutionPath}} --logger html --results-directory testresults --no-build
+      
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name : TestRunReports
+          path: testresults
+      
+      - name: Publish app for deployment
+        run: |
+          dotnet publish ${{env.SOLUTIONPATH}} --configuration ${{env.CONFIGURATION}} --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}} --no-build
+      
+      - name: Upload published app
+        uses: actions/upload-artifact@v2
+        with:
+          name: ./publishedwebapp
+          path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
+  

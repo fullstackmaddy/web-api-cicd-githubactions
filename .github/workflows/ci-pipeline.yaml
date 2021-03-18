@@ -36,11 +36,11 @@ jobs:
         run: dotnet test ${{env.solutionPath}} --logger html --results-directory testresults
       
       
-      - name: Upload Test results
+      - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
           name : TestRunReports
-          path: TestResults
+          path: testresults
   
   create-pull-request:
     needs: build-and-test
