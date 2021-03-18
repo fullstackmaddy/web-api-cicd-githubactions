@@ -14,6 +14,11 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ./publishedwebapp
   CONFIGURATION: Release
   SOLUTIONPATH: src/Poke.API.Facade.sln
+  POSTMANCOLLECTIONLOCATION: ./testassets/environment.json
+  POSTMANENVIRONMENTFILELOCATION : ./testassets/testcollection.json
+  PREPRODSLOTNAME: web-poke-facade-api-preprod
+  PRODWARMUPSLOT: web-poke-facade-api-prod-warmup
+  PRODSLOT: web-poke-facade-api
   
 
 
@@ -38,7 +43,7 @@ jobs:
 
       
       - name: Run Xunit Tests
-        run: dotnet test ${{env.solutionPath}} --logger html --results-directory testresults --no-build
+        run: dotnet test ${{env.SOLUTIONPATH}} --logger html --results-directory testresults --no-build
       
       
       - name: Upload test results
@@ -54,6 +59,111 @@ jobs:
       - name: Upload published app
         uses: actions/upload-artifact@v2
         with:
-          name: ./publishedwebapp
+          name: publishedwebapp
           path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
   
+  deploy-to-preprod:
+    runs-on: ubuntu-latest
+    needs: build-and-unit-test
+    environment:
+      name: preprod
+      url: ${{steps.deploy_preprod.outputs.webapp-url}}
+    
+    steps:
+      - name: Download Artifacts
+        uses: actions/actions/download-artifact@v2
+        with:
+          name: publishedwebapp
+      
+      - name: Deploy to Pre Prod app service
+        uses: azure/webapps-deploy@v2
+        id: deploy_preprod
+        with:
+          app-name: ${{env.AZURE_WEB_APP_NAME}}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          slot-name: ${{env.PREPRODSLOTNAME}}
+      
+      - name: Install node
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '12.x'
+      
+      - name: Instal Newman
+        shell: bash
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+      
+      - name: Make directory for integration tests
+        run: mkdir -p integrationtestresults
+
+      - name: Run integration tests
+        shell: bash
+        run: |
+          newman run ${{env.POSTMANCOLLECTIONLOCATION}} -e ${{env.POSTMANENVIRONMENTFILELOCATION}} \
+           --env-var "base-url=${{steps.deploy_preprod.outputs.webapp-url}}" \
+           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+
+  deploy-to-production-warmup-slot:
+    runs-on: ubuntu-latest
+    needs: deploy-to-preprod
+    environment:
+      name: prod-warmup
+      url: ${{steps.deploy_prodwarmup.outputs.webapp-url}}
+    steps:
+      - name: Download Artifacts
+        uses: actions/actions/download-artifact@v2
+        with:
+          name: publishedwebapp
+      
+      - name: Deploy to Prod warmup slot app service
+        uses: azure/webapps-deploy@v2
+        id: deploy_prodwarmup
+        with:
+          app-name: ${{env.AZURE_WEB_APP_NAME}}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          slot-name: ${{env.PRODWARMUPSLOT}}
+
+      - name: Install node
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: '12.x'
+      
+      - name: Instal Newman
+        shell: bash
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+      
+      - name: Make directory for integration tests
+        run: mkdir -p integrationtestresults
+
+      - name: Run integration tests
+        shell: bash
+        run: |
+          newman run ${{env.POSTMANCOLLECTIONLOCATION}} -e ${{env.POSTMANENVIRONMENTFILELOCATION}} \
+           --env-var "base-url=${{steps.deploy_prodwarmup.outputs.webapp-url}}" \
+           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+  
+  deploy-to-production:
+    needs: deploy-to-production-warmup-slot
+    runs-on: ubuntu-latest
+    env:
+      RESOURCEGROUP_NAME: rg-web-api-ci-cd-demo
+    steps:
+      - name: Log In To Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      
+      - name: Swap Slots
+        shell: bash
+        run: |
+          az webapp deployment slot swap  -g ${{env.RESOURCEGROUP_NAME}} -n ${{env.AZURE_WEB_APP_NAME}} \
+          --slot ${{env.PRODWARMUPSLOT}} \
+          --target-slot ${{env.PRODSLOT}}
+      
+      - name: Log Out From Azure
+        run: az logout
+
+
