@@ -18,7 +18,7 @@ env:
   POSTMANENVIRONMENTFILELOCATION : ./testassets/poke-api-facade-integrationtests-env.postman_environment.json
   PREPRODSLOTNAME: web-poke-facade-api-preprod
   PRODWARMUPSLOT: web-poke-facade-api-prod-warmup
-  PRODSLOT: web-poke-facade-api
+  PRODSLOT: production
   
 
 
@@ -107,7 +107,13 @@ jobs:
         run: |
           newman run ${{env.POSTMANCOLLECTIONLOCATION}} -e ${{env.POSTMANENVIRONMENTFILELOCATION}} \
            --env-var "base-url=${{steps.deploy_preprod.outputs.webapp-url}}" \
-           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+           -r htmlextra --reporter-htmlextra-export integrationtestresults/htmlreport.html
+      
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with: 
+          name: IntegrationPreProdReports
+          path: integrationtestresults
 
   deploy-to-production-warmup-slot:
     runs-on: ubuntu-latest
@@ -145,15 +151,20 @@ jobs:
 
       - name: Make directory for integration tests
         run: mkdir -p integrationtestresults
-
       
-
       - name: Run integration tests
         shell: bash
         run: |
           newman run ${{env.POSTMANCOLLECTIONLOCATION}} -e ${{env.POSTMANENVIRONMENTFILELOCATION}} \
            --env-var "base-url=${{steps.deploy_prodwarmup.outputs.webapp-url}}" \
-           -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html
+           -r htmlextra --reporter-htmlextra-export integrationtestresults/htmlreport.html
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with: 
+          name: IntegrationPreProdReports
+          path: integrationtestresults
+
   
   deploy-to-production:
     needs: deploy-to-production-warmup-slot
