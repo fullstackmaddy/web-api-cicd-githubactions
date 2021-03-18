@@ -10,7 +10,7 @@ on:
     - '**/testassets'
 
 env:
-  AZURE_WEB_APP_NAME: poke-facade-api
+  AZURE_WEB_APP_NAME: web-poke-facade-api
   AZURE_WEBAPP_PACKAGE_PATH: ./publishedwebapp
   CONFIGURATION: Release
   SOLUTIONPATH: src/Poke.API.Facade.sln
