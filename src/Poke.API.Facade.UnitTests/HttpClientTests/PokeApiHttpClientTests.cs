@@ -47,14 +47,6 @@ namespace Poke.API.Facade.UnitTests.HttpClientTests
         }
 
 
-        [Fact]
-        public async Task Is_Ability_Retrieved_By_Id()
-        {
-            //Arrange
-            MockMessageHandler(InstanceFactory.Ability);
-        }
-
-
         private void MockMessageHandler(Object o)
         {
             var response = new HttpResponseMessage

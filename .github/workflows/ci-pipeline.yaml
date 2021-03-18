@@ -13,7 +13,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     env:
-      solutionPath: src/Poke.API.Facade.sln
+      SOLUTIONPATH: src/Poke.API.Facade.sln
     
     steps:
 
@@ -26,14 +26,14 @@ jobs:
           dotnet-version: 3.1.x
       
       - name: Build code
-        run: dotnet build ${{env.solutionPath}}
+        run: dotnet build ${{env.SOLUTIONPATH}}
       
       - name: Make Directory for test results
         run: mkdir -p testresults
 
       
       - name: Run Xunit Tests
-        run: dotnet test ${{env.solutionPath}} --logger html --results-directory testresults
+        run: dotnet test ${{env.SOLUTIONPATH}} --logger html --results-directory testresults --no-build
       
       
       - name: Upload test results
