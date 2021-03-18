@@ -14,8 +14,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ./publishedwebapp
   CONFIGURATION: Release
   SOLUTIONPATH: src/Poke.API.Facade.sln
-  POSTMANCOLLECTIONLOCATION: ./testassets/environment.json
-  POSTMANENVIRONMENTFILELOCATION : ./testassets/testcollection.json
+  POSTMANCOLLECTIONLOCATION: testassets/testcollection.json
+  POSTMANENVIRONMENTFILELOCATION : testassets/environment.json
   PREPRODSLOTNAME: web-poke-facade-api-preprod
   PRODWARMUPSLOT: web-poke-facade-api-prod-warmup
   PRODSLOT: web-poke-facade-api
