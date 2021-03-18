@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "316b80f7-378e-476b-9d6f-acdc12983a6f",
+		"name": "Poke.Api.Facade.IntegrationTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Ditto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Does API return Details for ditto?\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    var responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson.name).to.eql(\"ditto\");\r",
+							"    pm.expect(responseJson.moves[0].name).to.eql(\"transform\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base-url}}/{{pokemon-resource}}/ditto",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{pokemon-resource}}",
+						"ditto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Snorlax",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Does API return Details for snorlax?\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    var responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson.name).to.eql(\"snorlax\");\r",
+							"    pm.expect(responseJson.moves[0].name).to.eql(\"mega-punch\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base-url}}/{{pokemon-resource}}/snorlax",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{pokemon-resource}}",
+						"snorlax"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ability Description for Id 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Does API return Details for ability with Id 2?\", function(){\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    \r",
+							"    var responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson.effects.length).to.eql(2);\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base-url}}/{{ability-resource}}/2",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{ability-resource}}",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
