@@ -14,8 +14,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ./publishedwebapp
   CONFIGURATION: Release
   SOLUTIONPATH: src/Poke.API.Facade.sln
-  POSTMANCOLLECTIONLOCATION: ./src/testassets/Poke.Api.Facade.IntegrationTests.postman_collection.json
-  POSTMANENVIRONMENTFILELOCATION : ./src/testassets/poke-api-facade-integrationtests-env.postman_environment.json
+  POSTMANCOLLECTIONLOCATION: ./testassets/Poke.Api.Facade.IntegrationTests.postman_collection.json
+  POSTMANENVIRONMENTFILELOCATION : ./testassets/poke-api-facade-integrationtests-env.postman_environment.json
   PREPRODSLOTNAME: web-poke-facade-api-preprod
   PRODWARMUPSLOT: web-poke-facade-api-prod-warmup
   PRODSLOT: web-poke-facade-api
@@ -93,9 +93,14 @@ jobs:
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
       - name: Make directory for integration tests
         run: mkdir -p integrationtestresults
+
+     
 
       - name: Run integration tests
         shell: bash
@@ -135,8 +140,13 @@ jobs:
           npm install -g newman
           npm install -g newman-reporter-htmlextra
       
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Make directory for integration tests
         run: mkdir -p integrationtestresults
+
+      
 
       - name: Run integration tests
         shell: bash
