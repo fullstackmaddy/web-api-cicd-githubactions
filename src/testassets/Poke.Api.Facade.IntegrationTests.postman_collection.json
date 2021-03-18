@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "316b80f7-378e-476b-9d6f-acdc12983a6f",
-		"name": "testcollection",
+		"name": "Poke.Api.Facade.IntegrationTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
