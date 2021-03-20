@@ -40,6 +40,8 @@ namespace Poke.API.Facade.UnitTests
             return JsonConvert.SerializeObject(o);
         }
 
+
+
         public static IMapper CreateMapper()
         {
             var abilityProfile = new AbilityProfile();
