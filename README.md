@@ -4,6 +4,9 @@ This repository contains the code to demo the CICD process with the GitHub Actio
 [![ci-pipeline](https://github.com/fullstackmaddy/web-api-cicd-githubactions/actions/workflows/ci-pipeline.yaml/badge.svg)](https://github.com/fullstackmaddy/web-api-cicd-githubactions/actions/workflows/ci-pipeline.yaml)
 
 
+
+[![production-deployment-pipeline](https://github.com/fullstackmaddy/web-api-cicd-githubactions/actions/workflows/production-deployment-pipeline.yaml/badge.svg)](https://github.com/fullstackmaddy/web-api-cicd-githubactions/actions/workflows/production-deployment-pipeline.yaml)
+
 ![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/fullstackmaddy/web-api-cicd-githubactions)
 
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/fullstackmaddy/web-api-cicd-githubactions)
