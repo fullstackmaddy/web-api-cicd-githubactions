@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       DOTNET_VERSION: '3.1.x'
       SOLUTIONPATH: 'src/Poke.API.Facade.sln'
