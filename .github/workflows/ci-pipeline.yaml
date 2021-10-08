@@ -9,35 +9,36 @@ on:
     - '**/*.gitignore'
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: self-hosted
     env:
-      SOLUTIONPATH: src/Poke.API.Facade.sln
-    
-    steps:
+      DOTNET_VERSION: '3.1.x'
+      SOLUTIONPATH: 'src/Poke.API.Facade.sln'
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    steps: 
 
-      - name: Setup dot net
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.x
-      
-      - name: Build code
-        run: dotnet build ${{env.SOLUTIONPATH}}
-      
-      - name: Make Directory for test results
-        run: mkdir -p testresults
+     #Setup dotnet
+     - name: Setup DotNet ${{ env.DOTNET_VERSION }}
+       uses: actions/setup-dotnet@v1
+       with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      #Build code
+     - name: Build code
+       uses: dotnet build --configuration Release ${{ env.SOLUTIONPATH }}  --output ./output
 
       
-      - name: Run Xunit Tests
-        run: dotnet test ${{env.SOLUTIONPATH}} --logger html --results-directory testresults --no-build
-      
-      
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name : TestRunReports
-          path: testresults
-  
+      #Make Dir
+     - name: make directory for test
+       run: mkdir -p testdir
+
+      #Run unit test
+     - name: Run unit test
+       run: dotnet test  ${{ env.SOLUTIONPATH }} --logger html --results-directory testdir --no-build
+
+      #upload artifacts
+     - name: Upload test results
+       uses: actions/upload-artifact@v2
+       with:
+        name: Upload artifacts
+        path: testdir     
