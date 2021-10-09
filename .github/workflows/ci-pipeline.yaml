@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       SOLUTIONPATH: src/Poke.API.Facade.sln
     
@@ -26,7 +26,7 @@ jobs:
           dotnet-version: 3.1.x
       
       - name: Build code
-        run: dotnet build ${{env.SOLUTIONPATH}}
+        run: dotnet build ${{env.SOLUTIONPATH}} --output ./output
       
       - name: Make Directory for test results
         run: mkdir -p testresults
