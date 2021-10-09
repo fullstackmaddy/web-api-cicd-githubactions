@@ -13,7 +13,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     env:
-      SOLUTIONPATH: web-api-cicd-githubactions/src/Poke.API.Facade.sln
+      SOLUTIONPATH: /src/Poke.API.Facade.sln
     
     steps:
 
