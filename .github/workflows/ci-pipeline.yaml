@@ -23,7 +23,7 @@ jobs:
       - name: Setup dot net
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 5.x.x
       
       - name: Build code
         run: dotnet build --configuration Release ${{env.SOLUTIONPATH}} --output ./output
