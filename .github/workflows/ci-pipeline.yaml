@@ -3,7 +3,7 @@ name: ci-pipeline
 on:
  push:
   branches:
-    - feature*
+    - main*
 
   paths-ignore:
     - '**/*.md'
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     env:
       SOLUTIONPATH: src/Poke.API.Facade.sln
     
@@ -23,10 +23,10 @@ jobs:
       - name: Setup dot net
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 5.x.x
       
       - name: Build code
-        run: dotnet build ${{env.SOLUTIONPATH}}
+        run: dotnet build --configuration Release ${{env.SOLUTIONPATH}} --output ./output
       
       - name: Make Directory for test results
         run: mkdir -p testresults
@@ -41,21 +41,5 @@ jobs:
         with:
           name : TestRunReports
           path: testresults
-  
-  create-pull-request:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Create a Pull request
-        uses: repo-sync/pull-request@v2
-        with: 
-          destination_branch: "main"                      
-          pr_title: "Pulling ${{ github.ref }} into master" 
-          pr_body: ":robot: *Web API bot raised the PR*"
-          pr_reviewer: "fullstackmaddy"                                          
-          pr_label: "autopr"                              
-          pr_draft: false                                  
-          pr_allow_empty: false                            
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
 
